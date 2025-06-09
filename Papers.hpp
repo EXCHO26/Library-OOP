@@ -6,6 +6,8 @@
 #include <exception>
 #include <stdexcept>
 #include <string>
+#include <vector>
+
 
 class Papers
 {
@@ -15,48 +17,70 @@ class Papers
             UNKNOWN,
             DRAMA,
             HORROR,
-            MISTERY,
+            MYSTERY,
             GENRE_COUNT
         };
 
+        enum Type
+        {
+            BOOK,
+            PERIODICAL,
+            SERIES
+        };
+
+        // Constructors
         Papers(std::ifstream& file);
-        Papers(std::string &title, std::string &pub, std::string &desc, std::string isbn, int year, double rating, std::string &genre);
+        Papers(const std::string &title, const std::string &publisher, const std::string &description, 
+               const std::string &isbn, unsigned yearPublished, double rating, const std::string &genre);
+
         Papers(const Papers &other);
         Papers &operator=(const Papers &other);
-        virtual ~Papers();
+        virtual ~Papers() = default;
 
-        std::string *getTitle() const;
-        std::string *getPublisher() const;
-        std::string *getDescription() const;
-        std::string *getISBN() const;
-        int *getYearPublished() const;
-        int *getID() const;
-        Genre *getGenre() const;
+        // Selectors
+        const std::string &getTitle() const       { return title; };
+        const std::string &getPublisher() const   { return publisher; };
+        const std::string &getDescription() const { return description; };
+        const std::string &getISBN() const        { return isbn; };
+        unsigned getYearPublished() const         { return yearPublished; };
+        int getID() const                         { return id; };
+        double getRating() const                  { return rating; };
+        Genre getGenre() const                    { return genre; };
 
-        void setTitle(std::string &title);
-        void setPublisher(std::string &publisher);
-        void setISBN(std::string &isbn);
-        void setYear(int year);
+        // Mutators
+        void setTitle(const std::string &title);
+        void setPublisher(const std::string &publisher);
+        void setISBN(const std::string &isbn);
+        void setYear(unsigned year);
         void setRating(double rating);
-        void setGenre(std::string &genre);
+        void setGenre(const std::string &genre);
 
+        virtual void printInfo() const;
+        virtual void saveOnFile(std::ofstream &out) const;
+
+        virtual Type getType() const = 0;
         virtual Papers *clone() const = 0;
-        virtual void printInfo() const = 0;
-
+    
     private:
-        Genre stringToGenre(std::string &text) const;
+        void copy(const Papers &other);
+
+    protected:
+        static Genre stringToGenre(const std::string &text);
+        static const char *genreToString(Genre genre);
+        static void readString(std::ifstream &file, std::string& str);
+        static void writeString(std::ofstream &out, const std::string &str);
 
     private:
         std::string title;
         std::string publisher;
         std::string description;
         std::string isbn;
-        int yearPublished;
+        unsigned yearPublished;
         const int id;
         double rating;
         Genre genre;
 
-        static int nextId;
+        static unsigned nextId;
 };
 
 #endif
