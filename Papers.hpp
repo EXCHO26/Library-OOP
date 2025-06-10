@@ -50,6 +50,7 @@ class Papers
         // Mutators
         void setTitle(const std::string &title);
         void setPublisher(const std::string &publisher);
+        void setDescription(const std::string &description);
         void setISBN(const std::string &isbn);
         void setYear(unsigned year);
         void setRating(double rating);

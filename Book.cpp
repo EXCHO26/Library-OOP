@@ -1,5 +1,26 @@
 #include "Book.hpp"
 
+void Book::print() const
+{
+    std::cout << "Key Words: ";
+    for (int i = 0; i < this->keyWords.size(); ++i)
+    {
+        std::cout << this->keyWords[i];
+        if (i < this->keyWords.size() - 1) std::cout << ", ";
+    }
+    std::cout << '\n';
+}
+
+void Book::save(std::ofstream &out) const
+{
+    size_t count = this->keyWords.size();
+    out.write((char *)&count, sizeof(count));
+    for (int i = 0; i < count; i++)
+    {
+        Papers::writeString(out, this->keyWords[i]);
+    }
+}
+
 Book::Book(std::ifstream& file) : Papers(file)
 {
     if (!file) throw std::invalid_argument("Cannot open the file for book creation!");
@@ -50,13 +71,7 @@ void Book::setKeyWords(const std::vector<std::string>& keyWords)
 void Book::printInfo() const
 {
     Papers::printInfo();
-    std::cout << "Key Words: ";
-    for (int i = 0; i < this->keyWords.size(); ++i)
-    {
-        std::cout << this->keyWords[i];
-        if (i < this->keyWords.size() - 1) std::cout << ", ";
-    }
-    std::cout << '\n';
+    this->print();
 }
 
 void Book::saveOnFile(std::ofstream &out) const
@@ -67,13 +82,7 @@ void Book::saveOnFile(std::ofstream &out) const
     out.write((char *)&type, sizeof(type));
 
     Papers::saveOnFile(out);
-
-    size_t count = this->keyWords.size();
-    out.write((char *)&count, sizeof(count));
-    for (int i = 0; i < count; i++)
-    {
-        Papers::writeString(out, this->keyWords[i]);
-    }
+    this->save(out);
 }
 
 Papers *Book::clone() const

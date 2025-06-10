@@ -3,7 +3,7 @@
 
 #include "Papers.hpp"
 
-class Periodical : public Papers
+class Periodical : virtual public Papers
 {
     public:
 
@@ -28,6 +28,7 @@ class Periodical : public Papers
         // Selectors
         unsigned getMonth() const { return month; }
         unsigned getIssueNumber() const { return issueNumber; }
+        const std::vector<Article> &getArticles() const { return articles; }
 
         // Mutators
         void setIssueNumber(unsigned issueNumber);
@@ -40,10 +41,13 @@ class Periodical : public Papers
         Type getType() const override { return Papers::PERIODICAL; }
         Papers *clone() const override;
 
-    private:
+    protected:
         void readArticle(std::ifstream &in, Article &article);
         void writeArticle(std::ofstream &out, const Article &article) const;
-        
+
+        void print() const;
+        void save(std::ofstream &out) const;
+
     private:
         unsigned month;
         unsigned issueNumber;

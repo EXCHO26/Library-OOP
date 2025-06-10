@@ -5,7 +5,7 @@
 
 
 
-class Book : public Papers
+class Book : virtual public Papers
 {
     public:
         // Constructors
@@ -29,6 +29,10 @@ class Book : public Papers
 
         Type getType() const override { return Papers::BOOK; }
         Papers *clone() const override;
+    
+    protected:
+        void print() const;
+        void save(std::ofstream &out) const;
 
     private:
         std::vector<std::string> keyWords;

@@ -116,6 +116,12 @@ void Papers::setPublisher(const std::string &publisher)
     this->publisher = publisher;
 }
 
+void Papers::setDescription(const std::string &description)
+{
+    if (description.empty()) throw std::invalid_argument("Description cannot be empty.");
+    this->description = description;
+}
+
 void Papers::setISBN(const std::string &isbn)
 {
     this->isbn = isbn;

@@ -37,6 +37,40 @@ void Periodical::writeArticle(std::ofstream &out, const Article &article) const
     if (!out) throw std::runtime_error("Failed to write article key words.");
 }
 
+void Periodical::print() const
+{
+    std::cout << "Month: " << month << '\n';
+    std::cout << "Issue Number: " << issueNumber << '\n';
+    std::cout << "Articles:" << '\n';
+
+    for (int i = 0; i < articles.size(); i++)
+    {
+        std::cout << "  Title: " << articles[i].title << '\n';
+        std::cout << "  Author: " << articles[i].author << '\n';
+        std::cout << "  Key Words: ";
+        for (int j = 0; j < articles[i].keyWords.size(); j++)
+        {
+            std::cout << articles[i].keyWords[j];
+            if (j < articles[i].keyWords.size() - 1) std::cout << ", ";
+        }
+        std::cout << '\n';
+        std::cout << '\n';
+    }
+}
+
+void Periodical::save(std::ofstream &out) const
+{
+    out.write((char *)&month, sizeof(month));
+    out.write((char *)&issueNumber, sizeof(issueNumber));
+
+    size_t articleCount = articles.size();
+    out.write((char *)&articleCount, sizeof(articleCount));
+    for (int i = 0; i < articleCount; i++)
+    {
+        writeArticle(out, articles[i]);
+    }
+}
+
 Periodical::Periodical(std::ifstream& file) : Papers(file)
 {
     if (!file) throw std::invalid_argument("Cannot open the file for periodical creation!");
@@ -103,23 +137,7 @@ void Periodical::setArticle(const std::vector<Article> &articles)
 void Periodical::printInfo() const
 {
     Papers::printInfo();
-    std::cout << "Month: " << month << '\n';
-    std::cout << "Issue Number: " << issueNumber << '\n';
-    std::cout << "Articles:" << '\n';
-
-    for (int i = 0; i < articles.size(); i++)
-    {
-        std::cout << "  Title: " << articles[i].title << '\n';
-        std::cout << "  Author: " << articles[i].author << '\n';
-        std::cout << "  Key Words: ";
-        for (int j = 0; j < articles[i].keyWords.size(); j++)
-        {
-            std::cout << articles[i].keyWords[j];
-            if (j < articles[i].keyWords.size() - 1) std::cout << ", ";
-        }
-        std::cout << '\n';
-        std::cout << '\n';
-    }
+    this->print();
 }
 
 void Periodical::saveOnFile(std::ofstream &out) const
@@ -130,16 +148,7 @@ void Periodical::saveOnFile(std::ofstream &out) const
     out.write((char *)&type, sizeof(type));
 
     Papers::saveOnFile(out);
-
-    out.write((char *)&month, sizeof(month));
-    out.write((char *)&issueNumber, sizeof(issueNumber));
-
-    size_t articleCount = articles.size();
-    out.write((char *)&articleCount, sizeof(articleCount));
-    for (int i = 0; i < articleCount; i++)
-    {
-        writeArticle(out, articles[i]);
-    }
+    this->save(out);
 
     if (!out) throw std::runtime_error("Failed to save periodical to file.");
 }

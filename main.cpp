@@ -1,53 +1,50 @@
 #include "Papers.hpp"
 #include "Book.hpp"
 #include "Periodical.hpp"
+#include "Series.hpp"
 
 int main()
 {
-    Book book("The Great Gatsby", "Scribner", "A novel set in the 1920s", 
-                "9780743273565", 1925, 8.5, "Drama", {"American Dream", "Wealth", "Love"});
-        
-    Book book2("1984", "Secker & Warburg", "A dystopian novel", 
-                "9780451524935", 1949, 9.0, "Horror", {"Totalitarianism", "Surveillance", "Freedom"});
+    
+    Series series("The Great Series", "Fiction House", "A thrilling series of adventures.",
+                   "1234567890", 2023, 9.5, "Drama", 1, 1,
+                   {{"First Article", "John Doe", {"adventure", "thrill"}},
+                    {"Second Article", "Jane Smith", {"mystery", "suspense"}}},
+                   {"keyword1", "keyword2"});
 
-    Periodical periodical("Nature", "Nature Publishing Group", "A scientific journal", 
-                        "0028-0836", 2023, 9.5, "Mystery", 5, 789, 
-                        {{"Quantum Computing Advances", "Alice Smith", {"Quantum", "Computing"}},
-                         {"Climate Change Effects", "Bob Johnson", {"Climate", "Change"}}});
+    Series anotherSeries = series; // Copy constructor
+    anotherSeries.setTitle("Another Great Series");
+    anotherSeries.setPublisher("Another House");
+    anotherSeries.setDescription("A different thrilling series.");
     
 
-    std::ofstream out("book.dat", std::ios::binary);
-    book.saveOnFile(out);
-    book2.saveOnFile(out);
-    periodical.saveOnFile(out);
-    out.close();
+    series.printInfo();
+    anotherSeries.printInfo();
 
-    Papers::Type type;
-    std::ifstream in("book.dat", std::ios::binary);
-    while (true)
+    std::ofstream outFile("series_data.bin", std::ios::binary);
+    if (outFile.is_open())
     {
-        in.read((char *)&type, sizeof(type));
-        if (!in) break;
-        switch (type)
-        {
-        case Papers::BOOK:
-            {
-                Book bookFromFile(in);
-                bookFromFile.printInfo();
-            }
-            break;
-            
-        case Papers::PERIODICAL:
-            {
-                Periodical periodicalFromFile(in);
-                periodicalFromFile.printInfo();
-            }
-        
-        default:
-            break;
-        }
+        series.saveOnFile(outFile);
+        anotherSeries.saveOnFile(outFile);
+        outFile.close();
     }
-    in.close();
-    
+    else
+    {
+        std::cerr << "Error opening file for writing." << std::endl;
+    }
+
+    std::ifstream inFile("series_data.bin", std::ios::binary);
+    if (inFile.is_open())
+    {
+        Series loadedSeries(inFile);
+        Series anotherLoadedSeries(inFile);
+        loadedSeries.printInfo();
+        anotherLoadedSeries.printInfo();
+        inFile.close();
+    }
+    else
+    {
+        std::cerr << "Error opening file for reading." << std::endl;
+    }
     return 0;
 }
