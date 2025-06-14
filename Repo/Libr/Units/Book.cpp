@@ -16,7 +16,7 @@ void Book::print() const
 void Book::save(std::ofstream &out) const
 {
     size_t count = this->keyWords.size();
-    out.write((char *)&count, sizeof(count));
+    out.write((const char *)&count, sizeof(count));
     for (int i = 0; i < count; i++)
     {
         Papers::writeString(out, this->keyWords[i]);
@@ -81,7 +81,7 @@ void Book::saveOnFile(std::ofstream &out) const
     if (!out) throw std::invalid_argument("Cannot open the file for saving book!");
 
     Type type = Papers::BOOK;
-    out.write((char *)&type, sizeof(type));
+    out.write((const char *)&type, sizeof(type));
 
     Papers::saveOnFile(out);
     this->save(out);

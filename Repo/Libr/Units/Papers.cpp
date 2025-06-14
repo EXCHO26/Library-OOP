@@ -32,7 +32,7 @@ void Papers::writeString(std::ofstream &out, const std::string &str)
     if (!out) throw std::invalid_argument("Cannot open the file for writing string.");
 
     size_t len = str.size();
-    out.write((char *)&len, sizeof(len));
+    out.write((const char *)&len, sizeof(len));
     out.write(str.c_str(), len);
 
     if (!out) throw std::runtime_error("Failed to write string.");
@@ -174,8 +174,8 @@ void Papers::saveOnFile(std::ofstream &out) const
     writeString(out, this->description);
     writeString(out, this->isbn);
 
-    out.write((char *)&yearPublished, sizeof(yearPublished));
-    out.write((char *)&rating, sizeof(rating));
+    out.write((const char *)&yearPublished, sizeof(yearPublished));
+    out.write((const char *)&rating, sizeof(rating));
 
     std::string genreStr = genreToString(this->genre);
     writeString(out, genreStr);

@@ -26,7 +26,7 @@ void Periodical::writeArticle(std::ofstream &out, const Article &article) const
     Papers::writeString(out, article.author);
 
     size_t keyWordCount = article.keyWords.size();
-    out.write((char *)&keyWordCount, sizeof(keyWordCount));
+    out.write((const char *)&keyWordCount, sizeof(keyWordCount));
     if (!out) throw std::runtime_error("Failed to write article key word count.");
 
     for (int i = 0; i < keyWordCount; i++)
@@ -60,11 +60,11 @@ void Periodical::print() const
 
 void Periodical::save(std::ofstream &out) const
 {
-    out.write((char *)&month, sizeof(month));
-    out.write((char *)&issueNumber, sizeof(issueNumber));
+    out.write((const char *)&month, sizeof(month));
+    out.write((const char *)&issueNumber, sizeof(issueNumber));
 
     size_t articleCount = articles.size();
-    out.write((char *)&articleCount, sizeof(articleCount));
+    out.write((const char *)&articleCount, sizeof(articleCount));
     for (int i = 0; i < articleCount; i++)
     {
         writeArticle(out, articles[i]);
@@ -145,7 +145,7 @@ void Periodical::saveOnFile(std::ofstream &out) const
     if (!out) throw std::invalid_argument("Cannot open the file for saving periodical!");
 
     Type type = Papers::PERIODICAL;
-    out.write((char *)&type, sizeof(type));
+    out.write((const char *)&type, sizeof(type));
 
     Papers::saveOnFile(out);
     this->save(out);
