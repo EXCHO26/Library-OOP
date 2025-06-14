@@ -35,6 +35,9 @@ void Series::printInfo() const
 
 void Series::saveOnFile(std::ofstream &out) const
 {
+    Type type = Papers::SERIES;
+    out.write((const char*)&type, sizeof(type));
+
     Papers::saveOnFile(out);
     Book::save(out);
     Periodical::save(out);

@@ -9,6 +9,8 @@ void Book::print() const
         if (i < this->keyWords.size() - 1) std::cout << ", ";
     }
     std::cout << '\n';
+    std::cout << '\n';
+
 }
 
 void Book::save(std::ofstream &out) const
