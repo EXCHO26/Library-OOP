@@ -66,39 +66,39 @@ LibrRepo::LibrRepo() : repo(nullptr), size(0), capacity(2)
 
 LibrRepo::LibrRepo(std::ifstream& in) : repo(nullptr), size(0), capacity(2)
 {
-    unsigned count;
-    in.read((char*)&count, sizeof(count));
+    if (!in) throw std::invalid_argument("Cannot open file to create libr repo!");
 
-    if (count <= 1) 
+    in.read((char*)&size, sizeof(size));
+
+    if (size <= 1) 
     {
         this->repo = new Papers*[capacity] {};
     }
     else
     {
         // Capacity = closest power of 2 greater than or equal to count
-        this->capacity = std::ceil(log2(count));
+        this->capacity = std::ceil(log2(size));
         this->repo = new Papers*[this->capacity] {};
+    }
 
-        try
+    try
+    {
+        for (int i = 0; i < size; ++i)
         {
-            for (int i = 0; i < count; ++i)
+            this->repo[i] = this->factory(in);
+        }
+    }
+    catch(const std::exception& e)
+    {
+        for (int i = 0; i < size; ++i)
+        {
+            if (this->repo[i] != nullptr)
             {
-                this->repo[i] = this->factory(in);
-                ++this->size;
+                delete this->repo[i];
             }
         }
-        catch(const std::exception& e)
-        {
-            for (int i = 0; i < this->size; ++i)
-            {
-                if (this->repo[i] != nullptr)
-                {
-                    delete this->repo[i];
-                }
-            }
-            delete[] this->repo;
-            throw;
-        }
+        delete[] this->repo;
+        throw;
     }
 }
 
@@ -166,12 +166,12 @@ void LibrRepo::printBook(unsigned idx) const
     std::cout << "ISBN: " << this->repo[idx]->getISBN() << '\n';
 }
 
-void LibrRepo::save(std::ofstream& in) const
+void LibrRepo::save(std::ofstream& out) const
 {
-    in.write((const char*)&this->size, sizeof(this->size));
+    out.write((const char*)&this->size, sizeof(this->size));
     for (int i = 0; i < this->size; ++i)
     {
-        this->repo[i]->saveOnFile(in);
+        this->repo[i]->saveOnFile(out);
     }
 }
 

@@ -21,13 +21,13 @@ class LibrRepo
         unsigned getSize() const { return size; }
 
         void printBook(unsigned idx) const;
-        void save(std::ofstream& in) const;
+        void save(std::ofstream& out) const;
 
         const Papers* operator[](const std::string &title) const;
         const Papers* operator[](int id) const;
 
     private:
-        static Papers **copyRepo(const LibrRepo &other, unsigned newCapacity);
+        Papers **copyRepo(const LibrRepo &other, unsigned newCapacity);
         void resize();
         void free();
 
