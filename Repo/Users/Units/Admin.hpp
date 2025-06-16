@@ -16,6 +16,9 @@ class Admin : public User
 
         User *clone() const override;
         User::UserType getUserType() const override { return User::ADMIN; }
+        std::vector<BorrowedPaper> &getBooksTaken() override;
+        void takeBook(unsigned id) override {};
+        void giveBook(unsigned id) override {};
 
     private:
         static bool validEmail(const std::string &email);

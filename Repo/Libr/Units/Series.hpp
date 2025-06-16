@@ -20,6 +20,12 @@ class Series : public Book, public Periodical
         Series &operator=(const Series &other);
         ~Series() {};
 
+        void change(const std::string &title, const std::string &publisher, const std::string &description,
+                    const std::string &isbn, unsigned yearPublished, double rating,
+                    const std::string &genre, unsigned month, unsigned issueNumber,
+                    const std::vector<Periodical::Article> &articles,
+                    const std::vector<std::string> &keyWords);
+
         // Selectors
         void printInfo() const override;
         void saveOnFile(std::ofstream &out) const override;

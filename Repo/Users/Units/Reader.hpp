@@ -1,21 +1,11 @@
 #ifndef READER_HEADER
 #define READER_HEADER
 
-#include <vector>
-
 #include "User.hpp"
 
 class Reader : public User
 {
     public:
-
-        struct BorrowedPaper
-        {
-            int paperID;
-            time_t borrowedAt;
-            time_t dueAt;
-            bool isReturned;
-        };
 
         Reader(std::ifstream& file);
         Reader(const std::string &username, const std::string &password);
@@ -28,6 +18,9 @@ class Reader : public User
 
         User *clone() const override;
         User::UserType getUserType() const override { return User::READER; }
+        std::vector<BorrowedPaper> &getBooksTaken() override { return borrowedPapers; };
+        void takeBook(unsigned id) override;
+        void giveBook(unsigned id) override;
 
     private:
         void printBorrowedPaper(unsigned idx) const;

@@ -129,7 +129,6 @@ void Papers::setISBN(const std::string &isbn)
 
 void Papers::setYear(unsigned year)
 {
-    if (year < 0) throw std::invalid_argument("Year cannot be negative.");
     this->yearPublished = year;
 }
 
@@ -179,4 +178,31 @@ void Papers::saveOnFile(std::ofstream &out) const
 
     std::string genreStr = genreToString(this->genre);
     writeString(out, genreStr);
+}
+
+void Papers::change(const std::string &title, const std::string &publisher, const std::string &description,
+            const std::string &isbn, unsigned yearPublished, double rating, const std::string &genre)
+{
+    if (title.empty() || publisher.empty() || description.empty())
+    {
+        throw std::invalid_argument("Invalid arguments!");
+    }
+    
+    if (rating < 0.0 || rating > 10.0)
+    {
+        throw std::invalid_argument("Invalid rating!");
+    }
+
+    if (stringToGenre(genre) == UNKNOWN)
+    {
+        throw std::invalid_argument("Invalid genre!");
+    }
+
+    setTitle(title);
+    setPublisher(publisher);
+    setDescription(description);
+    setISBN(isbn);
+    setYear(yearPublished);
+    setRating(rating);
+    setGenre(genre);
 }

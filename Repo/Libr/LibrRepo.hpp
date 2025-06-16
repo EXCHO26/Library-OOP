@@ -17,8 +17,14 @@ class LibrRepo
 
         void addPaper(Papers *paper);
         void removePaper(int id);
+        void transfer(unsigned id, LibrRepo &other);
 
         unsigned getSize() const { return size; }
+        unsigned getCopies(std::string &isbn) const;
+
+        void showType(Papers::Type type) const;
+        void showAll() const;
+        void showDetailedInfo(const std::string &isbn) const;
 
         void printBook(unsigned idx) const;
         void save(std::ofstream& out) const;

@@ -134,6 +134,22 @@ void Periodical::setArticle(const std::vector<Article> &articles)
     this->articles = articles;
 }
 
+void Periodical::change(const std::string &title, const std::string &publisher, const std::string &description,
+                    const std::string &isbn, unsigned yearPublished, double rating, 
+                    const std::string &genre, unsigned month, unsigned issueNumber,
+                    const std::vector<Article> &articles)
+{
+    if (issueNumber == 0 || month < 1 || month > 12) 
+    {
+        throw std::invalid_argument("Invalid arguments!");
+    }
+
+    this->Papers::change(title, publisher, description, isbn, yearPublished, rating, genre);
+    setIssueNumber(issueNumber);
+    setMonth(month);
+    setArticle(articles);
+}
+
 void Periodical::printInfo() const
 {
     Papers::printInfo();

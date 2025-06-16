@@ -181,7 +181,7 @@ void UserRepo::save(std::ofstream& out) const
     if (!out) throw std::invalid_argument("Failed to save the user repo!");
 }
 
-const User* UserRepo::operator[](const std::string &username) const
+User* UserRepo::operator[](const std::string &username)
 {
     for (unsigned i = 0; i < this->size; ++i)
     {
@@ -191,6 +191,13 @@ const User* UserRepo::operator[](const std::string &username) const
         }
     }
     return nullptr;
+}
+
+User* UserRepo::operator[](unsigned idx)
+{
+    if (idx >= size) throw std::out_of_range("Index is out of range!");
+
+    return repo[idx];
 }
 
 

@@ -43,7 +43,7 @@ class Papers
         const std::string &getDescription() const { return description; };
         const std::string &getISBN() const        { return isbn; };
         unsigned getYearPublished() const         { return yearPublished; };
-        int getID() const                         { return id; };
+        unsigned getID() const                    { return id; };
         double getRating() const                  { return rating; };
         Genre getGenre() const                    { return genre; };
 
@@ -55,10 +55,12 @@ class Papers
         void setYear(unsigned year);
         void setRating(double rating);
         void setGenre(const std::string &genre);
+        void change(const std::string &title, const std::string &publisher, const std::string &description,
+                    const std::string &isbn, unsigned yearPublished, double rating, const std::string &genre);
 
         virtual void printInfo() const;
         virtual void saveOnFile(std::ofstream &out) const;
-
+        
         virtual Type getType() const = 0;
         virtual Papers *clone() const = 0;
     
@@ -77,7 +79,7 @@ class Papers
         std::string description;
         std::string isbn;
         unsigned yearPublished;
-        const int id;
+        const unsigned id;
         double rating;
         Genre genre;
 

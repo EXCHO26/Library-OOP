@@ -66,8 +66,15 @@ Book &Book::operator=(const Book &other)
 
 void Book::setKeyWords(const std::vector<std::string>& keyWords)
 {
-    if (keyWords.empty()) throw std::invalid_argument("Key words cannot be empty.");
     this->keyWords = keyWords;
+}
+
+void Book::change(const std::string &title, const std::string &publisher, const std::string &description,
+                    const std::string &isbn, unsigned yearPublished, double rating, 
+                    const std::string &genre, const std::vector<std::string>& keyWords)
+{
+    this->Papers::change(title, publisher, description, isbn, yearPublished, rating, genre);
+    this->setKeyWords(keyWords);
 }
 
 void Book::printInfo() const

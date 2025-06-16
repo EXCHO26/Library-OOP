@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <ctime>
+#include <vector>
 
 class User
 {
@@ -16,6 +17,14 @@ class User
             READER,
             ADMIN,
             USERTYPE_COUNT
+        };
+
+        struct BorrowedPaper
+        {
+            unsigned paperID;
+            time_t borrowedAt;
+            time_t dueAt;
+            bool isReturned;
         };
 
         User(std::ifstream& file);
@@ -36,6 +45,9 @@ class User
 
         virtual User* clone() const = 0;
         virtual UserType getUserType() const = 0;
+        virtual std::vector<BorrowedPaper>& getBooksTaken() = 0;
+        virtual void takeBook(unsigned id) = 0;
+        virtual void giveBook(unsigned id) = 0;
 
     protected:
         static void readString(std::ifstream &file, std::string &str);

@@ -113,3 +113,24 @@ User* Reader::clone() const
 {
     return new Reader(*this);
 }
+
+void Reader::takeBook(unsigned id)
+{
+    time_t now = std::time(nullptr);
+    time_t dueAt = now + 30 * 24 * 60 * 60; // Every reader must return the book in 30 days
+    BorrowedPaper entry{id, now, dueAt, false};
+    borrowedPapers.push_back(entry);
+}
+
+void Reader::giveBook(unsigned id)
+{
+    for (int i = 0; i < borrowedPapers.size(); i++)
+    {
+        if (borrowedPapers[i].paperID == id && !borrowedPapers[i].isReturned)
+        {
+            borrowedPapers[i].isReturned = true;
+            borrowedPapers[i].dueAt = std::time(nullptr);
+            return;
+        }
+    }
+}

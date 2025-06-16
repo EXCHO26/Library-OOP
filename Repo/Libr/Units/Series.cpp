@@ -26,6 +26,19 @@ Series &Series::operator=(const Series &other)
     return *this;
 }
 
+void Series::change(const std::string &title, const std::string &publisher, const std::string &description,
+                    const std::string &isbn, unsigned yearPublished, double rating,
+                    const std::string &genre, unsigned month, unsigned issueNumber,
+                    const std::vector<Periodical::Article> &articles,
+                    const std::vector<std::string> &keyWords)
+{
+    this->Papers::change(title, publisher, description, isbn, yearPublished, rating, genre);
+    this->Book::setKeyWords(keyWords);
+    this->Periodical::setIssueNumber(issueNumber);
+    this->Periodical::setMonth(month);
+    this->Periodical::setArticle(articles);
+}
+
 void Series::printInfo() const
 {
     Papers::printInfo();

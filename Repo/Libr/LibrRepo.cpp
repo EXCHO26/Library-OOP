@@ -156,6 +156,65 @@ void LibrRepo::removePaper(int id)
     }
 }
 
+void LibrRepo::transfer(unsigned id, LibrRepo &other)
+{
+   for (unsigned i = 0; i < this->size; ++i)
+    {
+        if (this->repo[i]->getID() == id)
+        {
+            other.addPaper(this->repo[i]);
+
+            for (unsigned j = i; j < this->size - 1; ++j)
+            {
+                this->repo[j] = this->repo[j + 1];
+            }
+
+            this->repo[this->size - 1] = nullptr;
+            this->size--;
+            return;
+        }
+    } 
+}
+
+unsigned LibrRepo::getCopies(std::string &isbn) const
+{
+    unsigned copies = 0;
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getISBN() == isbn) copies++;
+    }
+    return copies;
+}
+
+void LibrRepo::showType(Papers::Type type) const
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getType() == type)
+        {
+            printBook(i);
+        }
+    }
+}
+void LibrRepo::showAll() const
+{
+    for (int i = 0; i < size; i++)
+    {
+        printBook(i);
+    }
+}
+
+void LibrRepo::showDetailedInfo(const std::string &isbn) const
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getISBN() == isbn)
+        {
+            repo[i]->printInfo();
+        }
+    }
+}
+
 void LibrRepo::printBook(unsigned idx) const
 {
     if (idx >= this->size) return;

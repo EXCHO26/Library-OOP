@@ -23,8 +23,9 @@ class UserRepo
         void printUser(unsigned idx) const;
         void save(std::ofstream& out) const;
 
-        const User* operator[](const std::string &username) const;
-    
+        User* operator[](const std::string &username);
+        User* operator[](unsigned idx);
+
     private:
         User **copyRepo(const UserRepo &other, unsigned newCapacity);
         void resize();

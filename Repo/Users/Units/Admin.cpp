@@ -54,3 +54,8 @@ User* Admin::clone() const
 {
     return new Admin(*this);
 }
+
+std::vector<User::BorrowedPaper>& Admin::getBooksTaken()
+{
+    throw std::logic_error("Admins dont have books taken!");
+}
