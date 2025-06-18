@@ -174,3 +174,24 @@ Papers *Periodical::clone() const
 {
     return new Periodical(*this);
 }
+
+bool Periodical::matchAutor(const std::string &autor) const
+{
+    for (int i = 0; i < articles.size(); i++)
+    {
+        if (articles[i].author == autor) return true;
+    }
+    return false;
+}
+
+bool Periodical::matchTaggs(const std::string &taggs) const
+{
+    for (int i = 0; i < articles.size(); i++)
+    {
+        for (int j = 0; articles[i].keyWords.size(); j++)
+        {
+            if (articles[i].keyWords[j] == taggs) return true;
+        }
+    }
+    return false;
+}

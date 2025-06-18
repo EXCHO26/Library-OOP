@@ -159,6 +159,15 @@ void Papers::setGenre(const std::string &genre)
     this->genre = newGenre;
 }
 
+void Papers::printShort() const
+{
+    std::cout << "ID: " << id << " - ";
+    std::cout << title << " - ";
+    std::cout << publisher << " - ";
+    std::cout << "Year: " << yearPublished << " - ";
+    std::cout << "ISBN: " << isbn << '\n';
+}
+
 void Papers::printInfo() const
 {
     std::cout << "Id: " << this->id << '\n';
@@ -242,4 +251,19 @@ void Papers::change()
     setYear(yearPublished);
     setRating(rating);
     setGenre(genre);
+}
+
+bool Papers::compare(const Papers *first, const Papers *second, const std::string &value)
+{
+    if (value == "id")      return first->getID() < second->getID();
+    if (value == "title")   return first->getTitle() < second->getTitle();
+    if (value == "year")    return first->getYearPublished() < second->getYearPublished();
+    if (value == "rating")  return first->getRating() < second->getRating();
+
+    throw std::invalid_argument("Cannot compare by the given value!");
+}
+
+bool Papers::matchTitle(const std::string &title) const
+{
+    return this->title == title;
 }

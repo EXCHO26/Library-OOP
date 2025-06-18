@@ -25,7 +25,8 @@ class Papers
         {
             BOOK,
             PERIODICAL,
-            SERIES
+            SERIES,
+            ALL
         };
 
         // Constructors
@@ -47,6 +48,10 @@ class Papers
         double getRating() const                  { return rating; };
         Genre getGenre() const                    { return genre; };
 
+        bool matchTitle(const std::string &title) const;
+        virtual bool matchAutor(const std::string &autor) const { return false; }
+        virtual bool matchTaggs(const std::string &taggs) const { return false; }
+
         // Mutators
         void setTitle(const std::string &title);
         void setPublisher(const std::string &publisher);
@@ -56,17 +61,21 @@ class Papers
         void setRating(double rating);
         void setGenre(const std::string &genre);
 
+        void printShort() const;
+
         virtual void printInfo() const;
         virtual void saveOnFile(std::ofstream &out) const;
         virtual void change();
         
         virtual Type getType() const = 0;
         virtual Papers *clone() const = 0;
-    
+
+        static bool compare(const Papers *first, const Papers *second, const std::string &value);
+
     private:
         void copy(const Papers &other);
         unsigned readId(std::ifstream &in) const;
-
+        
     protected:
         static Genre stringToGenre(const std::string &text);
         static const char *genreToString(Genre genre);

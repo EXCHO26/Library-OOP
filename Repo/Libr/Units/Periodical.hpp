@@ -38,6 +38,8 @@ class Periodical : virtual public Papers
         void printInfo() const override;
         void saveOnFile(std::ofstream &out) const override;
         void change() override;
+        bool matchAutor(const std::string &autor) const override;
+        bool matchTaggs(const std::string &taggs) const override;
 
         Type getType() const override { return Papers::PERIODICAL; }
         Papers *clone() const override;

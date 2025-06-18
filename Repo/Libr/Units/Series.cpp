@@ -6,9 +6,10 @@ Series::Series(const std::string &title, const std::string &publisher, const std
                const std::string &isbn, unsigned yearPublished, double rating, 
                const std::string &genre, unsigned month, unsigned issueNumber,
                const std::vector<Periodical::Article> &articles,
-               const std::vector<std::string> &keyWords)
+               const std::vector<std::string> &keyWords,
+               const std::string &autor)
     : Papers(title, publisher, description, isbn, yearPublished, rating, genre),
-      Book(title, publisher, description, isbn, yearPublished, rating, genre, keyWords),
+      Book(title, publisher, description, isbn, yearPublished, rating, genre, keyWords, autor),
       Periodical(title, publisher, description, isbn, yearPublished, rating, genre, month, issueNumber, articles) {};
 
 Series::Series(const Series &other) : Papers(other), Book(other), Periodical(other) {};
@@ -75,4 +76,14 @@ void Series::change()
     setKeyWords(keyWords);
     setMonth(month);
     setIssueNumber(issueNumber);
+}
+
+bool Series::matchAutor(const std::string &autor) const
+{
+    return Book::matchAutor(autor);
+}
+
+bool Series::matchTaggs(const std::string &taggs) const
+{
+    return Book::matchTaggs(taggs);
 }

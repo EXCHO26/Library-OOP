@@ -25,11 +25,20 @@ class LibrService
         void removeBook(unsigned id);
         void changeBook(unsigned id);
 
+        // Book find methods
+        void findPaper(const std::string &option, const std::string &value, Papers::Type type,
+                       bool sorted = false, const std::string &key = "", unsigned top = 0);
+
         // User alter methods
         void addUser(User *user);
         void removeUser(User *user);
         void changeSelfPass(const std::string &pass);
         void changeOtherPass(const std::string &username, const std::string &pass);
+
+        // User find methods
+        void findUserName(const std::string &name) const;
+        void findUserId(unsigned id) const;
+        void findUserStatus(const std::string &status) const;
 
         // Take/Return methods
         void take(unsigned id);

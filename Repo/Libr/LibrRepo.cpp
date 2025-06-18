@@ -25,6 +25,30 @@ Papers** LibrRepo::copyRepo(const LibrRepo &other, unsigned newCapacity)
     }
 }
 
+void LibrRepo::sort(std::vector<Papers*>& holder, 
+    bool (*compare)(const Papers*, const Papers*, const std::string& value),
+    const std::string& value)
+{
+    for (int i = 0; i < holder.size() - 1; i++)
+    {
+        for (int j = 0; j < holder.size() - 1 - i; j++)
+        {
+            if (!compare(holder[j], holder[j + 1], value))
+            {
+                std::swap(holder[j], holder[j + 1]);
+            }
+        }
+    }
+}
+
+bool LibrRepo::findHelper(const std::string &option, const std::string &value, unsigned idx)
+{
+    if (option == "title") return repo[idx]->matchTitle(value);
+    if (option == "autor") return repo[idx]->matchAutor(value);
+    if (option == "tag")   return repo[idx]->matchTaggs(value);
+    return false;
+}
+
 void LibrRepo::resize()
 {
     Papers **newRepo = copyRepo(*this, this->capacity * 2);
@@ -37,7 +61,6 @@ void LibrRepo::resize()
 
 void LibrRepo::free()
 {
-    std::cout << this->size << std::endl;
     for (int i = 0; i < this->size; i++)
     {
         delete this->repo[i];
@@ -220,14 +243,47 @@ void LibrRepo::showDetailedInfo(const std::string &isbn) const
     }
 }
 
+void LibrRepo::find(const std::string &option, const std::string &value, Papers::Type type,
+                    bool sorted, const std::string &key, unsigned top)
+{
+    std::vector<Papers*> holder;
+
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getType() == type || type == Papers::ALL)
+        {
+            if (findHelper(option, value, i))
+            {
+                holder.push_back(repo[i]);
+            }
+        }
+    }
+
+    if (holder.size() == 0) return;
+
+    if (!sorted)
+    {
+        for (int i = 0; i < holder.size(); i++)
+        {
+            holder[i]->printShort();
+        }
+    }
+    else
+    {
+        unsigned countShow = holder.size() > top ? top : holder.size();
+        sort(holder, Papers::compare, key);
+        for (int i = 0; i < countShow; i++)
+        {
+            holder[i]->printShort();
+        }
+    }
+}
+
 void LibrRepo::printBook(unsigned idx) const
 {
     if (idx >= this->size) return;
 
-    std::cout << "ID: " << this->repo[idx]->getID() << " - ";
-    std::cout << this->repo[idx]->getTitle() << " - ";
-    std::cout << this->repo[idx]->getPublisher() << " - ";
-    std::cout << "ISBN: " << this->repo[idx]->getISBN() << '\n';
+    this->repo[idx]->printShort();
 }
 
 void LibrRepo::save(std::ofstream& out) const

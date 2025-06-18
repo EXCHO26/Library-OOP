@@ -111,6 +111,13 @@ void LibrService::changeBook(unsigned id)
     books[id]->change();
 }
 
+void LibrService::findPaper(const std::string& option, const std::string &value, Papers::Type type,
+                       bool sorted, const std::string &key, unsigned top)
+{
+    checkLogged();
+    books.find(option, value, type, sorted, key, top);
+}
+
 void LibrService::addUser(User *user)
 {
     checkLogged();
@@ -153,6 +160,7 @@ void LibrService::changeOtherPass(const std::string &username, const std::string
 
 void LibrService::take(unsigned id)
 {
+    checkLogged();
     readerOnly();
 
     if (!books[id]) throw std::invalid_argument("No book with such id!");
@@ -163,6 +171,7 @@ void LibrService::take(unsigned id)
 
 void LibrService::give(unsigned id)
 {
+    checkLogged();
     readerOnly();
 
     for (int i = 0; i < loggedUser->getBooksTaken().size(); i++)
@@ -176,9 +185,50 @@ void LibrService::give(unsigned id)
     }
 }
 
+void LibrService::findUserName(const std::string &name) const
+{
+    checkLogged();
+    adminOnly();
+
+    users.showAllWithName(name);
+}
+
+void LibrService::findUserId(unsigned id) const
+{
+    checkLogged();
+    adminOnly();
+
+    users.showAllWithBook(id);
+}
+
+void LibrService::findUserStatus(const std::string &status) const
+{
+    checkLogged();
+    adminOnly();
+
+    if (status == "overdue") 
+    {
+        users.showAllOverdue();
+        return;
+    }
+
+    if (status == "reader")
+    {
+        users.showAllReaders();
+        return;
+    } 
+
+    if (status == "inactive") 
+    {
+        users.showAllInactive();
+        return;
+    }
+
+    throw std::invalid_argument("Invalid status!");
+}
+
 void LibrService::save(std::ofstream &libr, std::ofstream& taken, std::ofstream &users)
 {
-    std::cout << books.getSize() << "-Size" << '\n';
     this->books.save(libr);
     this->taken.save(taken);
     this->users.save(users);

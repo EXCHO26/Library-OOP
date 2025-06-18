@@ -43,6 +43,18 @@ void UserRepo::free()
     this->repo = nullptr;
 }
 
+bool UserRepo::uniqueUser(const std::string &name)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getUsername() == name)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 User* UserRepo::factory(std::ifstream &in) const
 {
     User::UserType type;
@@ -126,11 +138,15 @@ UserRepo::~UserRepo()
 
 void UserRepo::addUser(User *user)
 {
-    if (this->size >= this->capacity)
+    if (uniqueUser(user->getUsername()))
     {
-        this->resize();
+        if (this->size >= this->capacity)
+        {
+            this->resize();
+        }
+        this->repo[this->size++] = user;
     }
-    this->repo[this->size++] = user;
+    else throw std::invalid_argument("Username is already taken!");
 }
 
 void UserRepo::removeUser(const std::string& username)
@@ -153,18 +169,117 @@ void UserRepo::removeUser(const std::string& username)
     }
 }
 
+void UserRepo::showAllWithName(const std::string &name) const
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getUsername() == name)
+        {
+            printUser(i);
+            return;
+        }
+    }
+}
+
+void UserRepo::showAllWithBook(unsigned id) const
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getUserType() == User::READER)
+        {
+            const std::vector<User::BorrowedPaper> &temp = repo[i]->getBooksTaken();
+            for (int j = 0; j < temp.size(); j++)
+            {
+                if (temp[j].paperID == id && temp[j].isReturned == false)
+                {
+                    printUser(i);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void UserRepo::showAllOverdue() const
+{
+    const time_t oneDay = 60 * 60 * 24;
+    const time_t yesterday = std::time(nullptr) - oneDay;
+
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getUserType() == User::READER)
+        {
+            const std::vector<User::BorrowedPaper> &temp = repo[i]->getBooksTaken();
+            for (int j = 0; j < temp.size(); j++)
+            {
+                if (temp[j].isReturned == false && temp[j].dueAt < yesterday)
+                {
+                    printUser(i);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void UserRepo::showAllReaders() const
+{
+    const time_t oneMonth = 60 * 60 * 24 * 30;
+    const time_t monthAgo = std::time(nullptr) - oneMonth;
+    int count;
+
+    for (int i = 0; i < size; i++)
+    {
+        count = 0;
+        if (repo[i]->getUserType() == User::READER)
+        {
+            const std::vector<User::BorrowedPaper> &temp = repo[i]->getBooksTaken();
+            for (int j = 0; j < temp.size(); j++)
+            {
+                if (temp[j].borrowedAt > monthAgo) count++;
+            }
+            if (count >= 5) printUser(i);
+        }
+    }
+}
+
+void UserRepo::showAllInactive() const
+{
+    const time_t oneMonth = 60 * 60 * 24 * 30;
+    const time_t threeMonthAgo = std::time(nullptr) - oneMonth * 3;
+    bool active = false;
+
+    for (int i = 0; i < size; i++)
+    {
+        active = false;
+        if (repo[i]->getUserType() == User::READER)
+        {
+            const std::vector<User::BorrowedPaper> &temp = repo[i]->getBooksTaken();
+            for (int j = 0; j < temp.size(); j++)
+            {
+                if (temp[j].borrowedAt > threeMonthAgo)
+                {
+                    active = true;
+                    break;
+                }
+            }
+            if (!active) printUser(i);
+        }
+    }
+}
+
 void UserRepo::printUser(unsigned idx) const
 {
     if (idx >= this->size) return;
 
     time_t time = this->repo[idx]->getLastLoginAt();
 
-    std::cout << this->repo[idx]->getUsername() << " - ";
-    std::cout << std::ctime(&time);
     if (this->repo[idx]->getUserType() == User::ADMIN)
     {
-        std::cout << " - ADMIN " << '\n';
+        std::cout << "ADMIN - ";
     }
+    std::cout << this->repo[idx]->getUsername() << " - ";
+    std::cout << std::ctime(&time);
     std::cout << '\n';
 }
 

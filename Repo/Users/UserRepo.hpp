@@ -20,6 +20,12 @@ class UserRepo
 
         unsigned getSize() const { return size; }
 
+        void showAllWithName(const std::string &name) const;
+        void showAllWithBook(unsigned id) const;
+        void showAllOverdue() const;
+        void showAllReaders() const;
+        void showAllInactive() const;
+
         void printUser(unsigned idx) const;
         void save(std::ofstream& out) const;
 
@@ -30,6 +36,7 @@ class UserRepo
         User **copyRepo(const UserRepo &other, unsigned newCapacity);
         void resize();
         void free();
+        bool uniqueUser(const std::string &name);
 
         User* factory(std::ifstream &in) const;
 
