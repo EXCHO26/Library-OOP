@@ -23,7 +23,7 @@ class LibrService
         // Book alter methods
         void addBook(Papers* book);
         void removeBook(unsigned id);
-        //TODO void changeBook(unsigned id);
+        void changeBook(unsigned id);
 
         // User alter methods
         void addUser(User *user);

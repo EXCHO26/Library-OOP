@@ -26,19 +26,6 @@ Series &Series::operator=(const Series &other)
     return *this;
 }
 
-void Series::change(const std::string &title, const std::string &publisher, const std::string &description,
-                    const std::string &isbn, unsigned yearPublished, double rating,
-                    const std::string &genre, unsigned month, unsigned issueNumber,
-                    const std::vector<Periodical::Article> &articles,
-                    const std::vector<std::string> &keyWords)
-{
-    this->Papers::change(title, publisher, description, isbn, yearPublished, rating, genre);
-    this->Book::setKeyWords(keyWords);
-    this->Periodical::setIssueNumber(issueNumber);
-    this->Periodical::setMonth(month);
-    this->Periodical::setArticle(articles);
-}
-
 void Series::printInfo() const
 {
     Papers::printInfo();
@@ -61,3 +48,31 @@ Papers *Series::clone() const
     return new Series(*this);
 }
 
+void Series::change()
+{
+    unsigned month, issueNumber;
+    std::vector<std::string> keyWords;
+    std::string input;
+
+    std::cout << " > Month: ";
+    std::cin >> month;
+    if (month < 1 || month > 12) throw std::invalid_argument("Month must be between 1 and 12.");
+
+    std::cout << " > Issue Number: ";
+    std::cin >> issueNumber;
+    if (issueNumber == 0) throw std::invalid_argument("Issue number cannot be zero.");
+
+    std::cout << "Enter keywords (empty line to stop):\n";
+    while (true) 
+    {
+        std::getline(std::cin, input);
+        if (input.empty()) break;
+        keyWords.push_back(input);
+    }
+
+    this->Papers::change();
+
+    setKeyWords(keyWords);
+    setMonth(month);
+    setIssueNumber(issueNumber);
+}

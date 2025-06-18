@@ -31,6 +31,7 @@ class LibrRepo
 
         const Papers* operator[](const std::string &title) const;
         const Papers* operator[](int id) const;
+        Papers *operator[](int id);
 
     private:
         Papers **copyRepo(const LibrRepo &other, unsigned newCapacity);

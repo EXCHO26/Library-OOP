@@ -23,9 +23,7 @@ class Book : virtual public Papers
 
         // Mutators
         void setKeyWords(const std::vector<std::string> &keyWords);
-        void change(const std::string &title, const std::string &publisher, const std::string &description,
-                    const std::string &isbn, unsigned yearPublished, double rating, 
-                    const std::string &genre, const std::vector<std::string>& keyWords);
+        void change() override;
 
         void printInfo() const override;
         void saveOnFile(std::ofstream &out) const override;

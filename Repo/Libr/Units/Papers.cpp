@@ -1,6 +1,6 @@
 #include "Papers.hpp"
 
-unsigned Papers::nextId = 0;
+unsigned Papers::nextId = 1;
 
 void Papers::copy(const Papers &other)
 {
@@ -11,6 +11,18 @@ void Papers::copy(const Papers &other)
     this->yearPublished = other.yearPublished;
     this->rating = other.rating;
     this->genre = other.genre;
+}
+
+unsigned Papers::readId(std::ifstream &in) const
+{
+    if (!in) throw std::invalid_argument("Cannot read the id of a book!");
+
+    unsigned result;
+    in.read((char *)&result, sizeof(result));
+
+    if (!in) throw std::invalid_argument("Failed to read the id of a book!");
+
+    return result;
 }
 
 void Papers::readString(std::ifstream &file, std::string& str)
@@ -57,7 +69,7 @@ const char* Papers::genreToString(Genre genre)
     }
 }
 
-Papers::Papers(std::ifstream& file) : id(nextId++)
+Papers::Papers(std::ifstream& file) : id(readId(file))
 {
     if (!file) throw std::invalid_argument("Cannot open the file for paper creation!");
 
@@ -76,6 +88,8 @@ Papers::Papers(std::ifstream& file) : id(nextId++)
 
     readString(file, genre);
     this->genre = stringToGenre(genre);
+
+    nextId = this->id + 1;
 }
 
 Papers::Papers(const std::string &title, const std::string &publisher, const std::string &description, 
@@ -90,7 +104,7 @@ Papers::Papers(const std::string &title, const std::string &publisher, const std
 }
 
 
-Papers::Papers(const Papers &other) : id(nextId++)
+Papers::Papers(const Papers &other) : id(other.id)
 {
     this->copy(other);
 }
@@ -147,6 +161,7 @@ void Papers::setGenre(const std::string &genre)
 
 void Papers::printInfo() const
 {
+    std::cout << "Id: " << this->id << '\n';
     std::cout << "Title: " << this->title << '\n'
               << "Publisher: " << this->publisher << '\n'
               << "Description: " << this->description << '\n'
@@ -168,6 +183,8 @@ void Papers::saveOnFile(std::ofstream &out) const
 {
     if (!out) throw std::invalid_argument("Cannot open the file for saving paper!");
 
+    out.write((const char *)&id, sizeof(id));
+
     writeString(out, this->title);
     writeString(out, this->publisher);
     writeString(out, this->description);
@@ -180,18 +197,38 @@ void Papers::saveOnFile(std::ofstream &out) const
     writeString(out, genreStr);
 }
 
-void Papers::change(const std::string &title, const std::string &publisher, const std::string &description,
-            const std::string &isbn, unsigned yearPublished, double rating, const std::string &genre)
+void Papers::change()
 {
+    std::string title, publisher, description, isbn, genre;
+    double rating;
+
+    std::cout << " > Title: ";
+    std::cin >> title;
+
+    std::cout << " > Publisher: ";
+    std::cin >> publisher;
+
+    std::cout << " > Description: ";
+    std::cin >> description;
+
     if (title.empty() || publisher.empty() || description.empty())
     {
         throw std::invalid_argument("Invalid arguments!");
     }
-    
+
+    std::cout << " > ISBN: ";
+    std::cin >> isbn;
+
+    std::cout << " > Rating: ";
+    std::cin >> rating;
+
     if (rating < 0.0 || rating > 10.0)
     {
         throw std::invalid_argument("Invalid rating!");
     }
+
+    std::cout << " > Genre: ";
+    std::cin >> rating;
 
     if (stringToGenre(genre) == UNKNOWN)
     {

@@ -23,25 +23,13 @@ void LibrService::checkLogged() const
 
 
 LibrService::LibrService(std::ifstream &libr, std::ifstream& taken, std::ifstream &users)
+    : books(libr), taken(taken), users(users)
 {
-    if (!libr)
+    if (this->users.getSize() == 0)
     {
-        this->books = LibrRepo();
-    }
-    else this->books = LibrRepo(libr);
-
-    if (!taken)
-    {
-        this->taken = LibrRepo();
-    }
-    else this->taken = LibrRepo(taken);
-
-    if (!users)
-    {
-        this->users = UserRepo();
+        std::cout << "There are no users! Added system user! Username: admin, Password: i<3c++" << '\n';
         this->users.addUser(new Admin("admin", "i<3c++", "email@.com"));
     }
-    else this->users = UserRepo(users);
 }
 
 bool LibrService::login(const std::string &username, const std::string &password)
@@ -118,6 +106,11 @@ void LibrService::removeBook(unsigned id)
     }
 }
 
+void LibrService::changeBook(unsigned id)
+{
+    books[id]->change();
+}
+
 void LibrService::addUser(User *user)
 {
     checkLogged();
@@ -185,9 +178,10 @@ void LibrService::give(unsigned id)
 
 void LibrService::save(std::ofstream &libr, std::ofstream& taken, std::ofstream &users)
 {
+    std::cout << books.getSize() << "-Size" << '\n';
     this->books.save(libr);
     this->taken.save(taken);
-    this->users.save(taken);
+    this->users.save(users);
 }
 
 

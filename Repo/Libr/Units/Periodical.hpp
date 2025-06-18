@@ -34,13 +34,10 @@ class Periodical : virtual public Papers
         void setIssueNumber(unsigned issueNumber);
         void setMonth(unsigned month);
         void setArticle(const std::vector<Article> &articles);
-        void change(const std::string &title, const std::string &publisher, const std::string &description,
-                    const std::string &isbn, unsigned yearPublished, double rating, 
-                    const std::string &genre, unsigned month, unsigned issueNumber,
-                    const std::vector<Article> &articles);
-
+        
         void printInfo() const override;
         void saveOnFile(std::ofstream &out) const override;
+        void change() override;
 
         Type getType() const override { return Papers::PERIODICAL; }
         Papers *clone() const override;

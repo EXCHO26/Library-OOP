@@ -28,21 +28,25 @@ Papers** LibrRepo::copyRepo(const LibrRepo &other, unsigned newCapacity)
 void LibrRepo::resize()
 {
     Papers **newRepo = copyRepo(*this, this->capacity * 2);
+    unsigned temp = this->size;
     this->free();
     this->repo = newRepo;
     this->capacity *= 2;
+    this->size = temp;
 }
 
 void LibrRepo::free()
 {
-    for (int i = 0; i < this->size; ++i)
+    std::cout << this->size << std::endl;
+    for (int i = 0; i < this->size; i++)
     {
         delete this->repo[i];
+        this->repo[i] = nullptr;
     }
     delete[] this->repo;
     this->repo = nullptr;
 
-    // Dont reset size because it is used in resize()
+    this->size = 0;
 }
 
 Papers* LibrRepo::factory(std::ifstream &in) const
@@ -77,7 +81,8 @@ LibrRepo::LibrRepo(std::ifstream& in) : repo(nullptr), size(0), capacity(2)
     else
     {
         // Capacity = closest power of 2 greater than or equal to count
-        this->capacity = std::ceil(log2(size));
+        unsigned t = std::ceil(log2(size));
+        this->capacity = (1 << t);
         this->repo = new Papers*[this->capacity] {};
     }
 
@@ -158,7 +163,7 @@ void LibrRepo::removePaper(int id)
 
 void LibrRepo::transfer(unsigned id, LibrRepo &other)
 {
-   for (unsigned i = 0; i < this->size; ++i)
+    for (unsigned i = 0; i < this->size; ++i)
     {
         if (this->repo[i]->getID() == id)
         {
@@ -247,6 +252,18 @@ const Papers* LibrRepo::operator[](const std::string &title) const
 }
 
 const Papers* LibrRepo::operator[](int id) const
+{
+    for (unsigned i = 0; i < this->size; ++i)
+    {
+        if (this->repo[i]->getID() == id)
+        {
+            return this->repo[i];
+        }
+    }
+    return nullptr;
+}
+
+Papers* LibrRepo::operator[](int id)
 {
     for (unsigned i = 0; i < this->size; ++i)
     {

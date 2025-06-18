@@ -73,7 +73,8 @@ UserRepo::UserRepo(std::ifstream& in) : repo(nullptr), size(0), capacity(2)
     }
     else
     {
-        this->capacity = std::ceil(log2(size));
+        unsigned t = std::ceil(log2(size));
+        this->capacity = (1 << t);
         this->repo = new User*[this->capacity] {};
     }
 

@@ -45,7 +45,6 @@ Book::Book(const std::string &title, const std::string &publisher, const std::st
            const std::string &genre, const std::vector<std::string>& keyWords)
     : Papers(title, publisher, description, isbn, yearPublished, rating, genre)
 {
-    if (keyWords.empty()) throw std::invalid_argument("Key words cannot be empty.");
     this->keyWords = keyWords;
 }
 
@@ -69,12 +68,21 @@ void Book::setKeyWords(const std::vector<std::string>& keyWords)
     this->keyWords = keyWords;
 }
 
-void Book::change(const std::string &title, const std::string &publisher, const std::string &description,
-                    const std::string &isbn, unsigned yearPublished, double rating, 
-                    const std::string &genre, const std::vector<std::string>& keyWords)
+void Book::change()
 {
-    this->Papers::change(title, publisher, description, isbn, yearPublished, rating, genre);
-    this->setKeyWords(keyWords);
+    std::vector<std::string> keyWords;
+    std::string input;
+
+    this->Papers::change();
+    
+    std::cout << "Enter keywords (empty line to stop):\n";
+    while (true) 
+    {
+        std::getline(std::cin, input);
+        if (input.empty()) break;
+        keyWords.push_back(input);
+    }
+    setKeyWords(keyWords);
 }
 
 void Book::printInfo() const

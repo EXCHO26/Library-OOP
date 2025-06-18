@@ -55,17 +55,17 @@ class Papers
         void setYear(unsigned year);
         void setRating(double rating);
         void setGenre(const std::string &genre);
-        void change(const std::string &title, const std::string &publisher, const std::string &description,
-                    const std::string &isbn, unsigned yearPublished, double rating, const std::string &genre);
 
         virtual void printInfo() const;
         virtual void saveOnFile(std::ofstream &out) const;
+        virtual void change();
         
         virtual Type getType() const = 0;
         virtual Papers *clone() const = 0;
     
     private:
         void copy(const Papers &other);
+        unsigned readId(std::ifstream &in) const;
 
     protected:
         static Genre stringToGenre(const std::string &text);
