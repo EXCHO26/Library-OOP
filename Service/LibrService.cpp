@@ -134,6 +134,8 @@ void LibrService::removeUser(User *user)
     checkLogged();
     adminOnly();
 
+    bool perm = false;
+
     if (user == loggedUser) 
     {
         if (users.adminCount() == 1)
@@ -151,6 +153,14 @@ void LibrService::removeUser(User *user)
         {
             if (user->getBooksTaken()[i].isReturned == false)
             {
+                if (!perm)
+                {
+                    char ch;
+                    std::cout << "User have unreturned book! Countinue: (Y/N) :";
+                    std::cin >> ch;
+                    if (std::toupper(ch) != 'Y') return;
+                    perm = true;
+                }
                 taken.removePaper(user->getBooksTaken()[i].paperID);
             }
         }
