@@ -316,4 +316,14 @@ User* UserRepo::operator[](unsigned idx)
     return repo[idx];
 }
 
+int UserRepo::adminCount() const
+{
+    int result = 0;
+    for (int i = 0; i < size; i++)
+    {
+        if (repo[i]->getUserType() == User::ADMIN) result++;
+    }
+    return result;
+}
+
 

@@ -32,6 +32,8 @@ class UserRepo
         User* operator[](const std::string &username);
         User* operator[](unsigned idx);
 
+        int adminCount() const;
+
     private:
         User **copyRepo(const UserRepo &other, unsigned newCapacity);
         void resize();

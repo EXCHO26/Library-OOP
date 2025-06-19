@@ -212,13 +212,13 @@ void Papers::change()
     double rating;
 
     std::cout << " > Title: ";
-    std::cin >> title;
+    std::getline(std::cin, title);
 
     std::cout << " > Publisher: ";
-    std::cin >> publisher;
+    std::getline(std::cin, publisher);
 
     std::cout << " > Description: ";
-    std::cin >> description;
+    std::getline(std::cin, description);
 
     if (title.empty() || publisher.empty() || description.empty())
     {
@@ -226,7 +226,7 @@ void Papers::change()
     }
 
     std::cout << " > ISBN: ";
-    std::cin >> isbn;
+    std::getline(std::cin, isbn);
 
     std::cout << " > Rating: ";
     std::cin >> rating;
@@ -236,8 +236,9 @@ void Papers::change()
         throw std::invalid_argument("Invalid rating!");
     }
 
+    std::cin.ignore();
     std::cout << " > Genre: ";
-    std::cin >> rating;
+    std::getline(std::cin, genre);
 
     if (stringToGenre(genre) == UNKNOWN)
     {

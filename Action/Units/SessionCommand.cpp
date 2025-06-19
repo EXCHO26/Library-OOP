@@ -3,7 +3,7 @@
 SessionCommand::SessionCommand(Action act, const std::string &username, const std::string &pass)
     : act(act), username(username), password(pass) {};
 
-void SessionCommand::execute(LibrService &service)
+void SessionCommand::execute(LibrService &service) const
 {
     switch (act)
     {

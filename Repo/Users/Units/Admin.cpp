@@ -27,7 +27,9 @@ Admin::Admin(std::ifstream &file) : User(file)
 
 Admin::Admin(const std::string &username, const std::string &password, const std::string &email)
     : User(username, password), email(email) 
-{};
+{
+    if (!validEmail(email)) throw std::invalid_argument("Email is not valid!");
+};
 
 
 void Admin::printInfo() const

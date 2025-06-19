@@ -27,15 +27,25 @@ Papers** LibrRepo::copyRepo(const LibrRepo &other, unsigned newCapacity)
 
 void LibrRepo::sort(std::vector<Papers*>& holder, 
     bool (*compare)(const Papers*, const Papers*, const std::string& value),
-    const std::string& value)
+    const std::string& value, bool asc)
 {
     for (int i = 0; i < holder.size() - 1; i++)
     {
         for (int j = 0; j < holder.size() - 1 - i; j++)
         {
-            if (!compare(holder[j], holder[j + 1], value))
+            if (asc)
             {
-                std::swap(holder[j], holder[j + 1]);
+                if (!compare(holder[j], holder[j + 1], value))
+                {
+                    std::swap(holder[j], holder[j + 1]);
+                }
+            }
+            else
+            {
+                if (compare(holder[j], holder[j + 1], value))
+                {
+                    std::swap(holder[j], holder[j + 1]);
+                }
             }
         }
     }
@@ -216,19 +226,29 @@ unsigned LibrRepo::getCopies(std::string &isbn) const
 
 void LibrRepo::showType(Papers::Type type) const
 {
+    std::system("cls");
+    const int perPage = 5;
+    int shown = 0;
+
     for (int i = 0; i < size; i++)
     {
-        if (repo[i]->getType() == type)
+        if (repo[i]->getType() == type || type == Papers::ALL)
         {
+            if (shown == perPage)
+            {
+                char ch;
+                std::cout << "Show more (Y/N): ";
+                std::cin >> ch;
+
+                if (std::toupper(ch) != 'Y') return;
+
+                shown = 0;
+                std::system("cls");
+            }
+
             printBook(i);
+            ++shown;
         }
-    }
-}
-void LibrRepo::showAll() const
-{
-    for (int i = 0; i < size; i++)
-    {
-        printBook(i);
     }
 }
 
@@ -244,7 +264,7 @@ void LibrRepo::showDetailedInfo(const std::string &isbn) const
 }
 
 void LibrRepo::find(const std::string &option, const std::string &value, Papers::Type type,
-                    bool sorted, const std::string &key, unsigned top)
+                    bool sorted, bool asc, const std::string &key, int top)
 {
     std::vector<Papers*> holder;
 
@@ -261,21 +281,15 @@ void LibrRepo::find(const std::string &option, const std::string &value, Papers:
 
     if (holder.size() == 0) return;
 
-    if (!sorted)
+    if (sorted) sort(holder, Papers::compare, key, asc);
+
+    unsigned countShow;
+    if (top >= 1) countShow = holder.size() > top ? top : holder.size();
+    else countShow = holder.size();
+
+    for (int i = 0; i < countShow; i++)
     {
-        for (int i = 0; i < holder.size(); i++)
-        {
-            holder[i]->printShort();
-        }
-    }
-    else
-    {
-        unsigned countShow = holder.size() > top ? top : holder.size();
-        sort(holder, Papers::compare, key);
-        for (int i = 0; i < countShow; i++)
-        {
-            holder[i]->printShort();
-        }
+        holder[i]->printShort();
     }
 }
 

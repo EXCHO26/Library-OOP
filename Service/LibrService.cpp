@@ -21,7 +21,6 @@ void LibrService::checkLogged() const
     if (!loggedUser) throw std::logic_error("No user is logged in!");
 }
 
-
 LibrService::LibrService(std::ifstream &libr, std::ifstream& taken, std::ifstream &users)
     : books(libr), taken(taken), users(users)
 {
@@ -32,7 +31,7 @@ LibrService::LibrService(std::ifstream &libr, std::ifstream& taken, std::ifstrea
     }
 }
 
-bool LibrService::login(const std::string &username, const std::string &password)
+void LibrService::login(const std::string &username, const std::string &password)
 {
     if (loggedUser) throw std::invalid_argument("Someone is already logged!");
     if (!users[username]) throw std::invalid_argument("No such user!");
@@ -41,14 +40,14 @@ bool LibrService::login(const std::string &username, const std::string &password
     {
         loggedUser = users[username];
         std::cout << "Welcome " << username << "!" << '\n';
-        return true;
     }
-    return false;
+    else throw std::invalid_argument("Invalid password or username!");
 }
 
 void LibrService::logout()
 {
     checkLogged();
+    std::cout << "Goodbye! " << loggedUser->getUsername() << '\n';
     loggedUser = nullptr;
 }
 
@@ -69,7 +68,7 @@ void LibrService::showSeries() const
 
 void LibrService::showAll() const
 {
-    books.showAll();
+    books.showType(Papers::ALL);
 }
 
 void LibrService::getInfo(const std::string &isbn) const
@@ -94,14 +93,17 @@ void LibrService::removeBook(unsigned id)
 
     for (int i = 0; i < users.getSize(); i++)
     {
-        std::vector<User::BorrowedPaper>& temp = users[i]->getBooksTaken();
-        for (int j = 0; j < temp.size();)
+        if (users[i]->getUserType() == User::READER)
         {
-            if (temp[j].paperID == id)
+            std::vector<User::BorrowedPaper>& temp = users[i]->getBooksTaken();
+            for (int j = 0; j < temp.size();)
             {
-                temp.erase(temp.begin() + j);
+                if (temp[j].paperID == id)
+                {
+                    temp.erase(temp.begin() + j);
+                }
+                else j++;
             }
-            else j++;
         }
     }
 }
@@ -112,10 +114,10 @@ void LibrService::changeBook(unsigned id)
 }
 
 void LibrService::findPaper(const std::string& option, const std::string &value, Papers::Type type,
-                       bool sorted, const std::string &key, unsigned top)
+                       bool sorted, bool asc, const std::string &key, int top)
 {
     checkLogged();
-    books.find(option, value, type, sorted, key, top);
+    books.find(option, value, type, sorted, asc, key, top);
 }
 
 void LibrService::addUser(User *user)
@@ -127,18 +129,39 @@ void LibrService::addUser(User *user)
 
 void LibrService::removeUser(User *user)
 {
+    if (!user) return;
+
     checkLogged();
     adminOnly();
-    if (user == loggedUser) logout();
 
-    for (int i = 0; i < user->getBooksTaken().size(); i++)
+    if (user == loggedUser) 
     {
-        if (user->getBooksTaken()[i].isReturned == false)
+        if (users.adminCount() == 1)
         {
-            taken.removePaper(user->getBooksTaken()[i].paperID);
+            std::cout << "Cannot remove all users!" << '\n';
+            logout();
+            return;
+        }
+        logout();
+    }
+
+    if (user->getUserType() == User::READER)
+    {
+        for (int i = 0; i < user->getBooksTaken().size(); i++)
+        {
+            if (user->getBooksTaken()[i].isReturned == false)
+            {
+                taken.removePaper(user->getBooksTaken()[i].paperID);
+            }
         }
     }
+    
     users.removeUser(user->getUsername());
+}
+
+void LibrService::removeUser(const std::string &username)
+{
+    removeUser(users[username]);
 }
 
 void LibrService::changeSelfPass(const std::string &pass)

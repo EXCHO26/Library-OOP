@@ -7,10 +7,11 @@
 class LibrService
 {
     public:
+        LibrService() = default;
         LibrService(std::ifstream &libr, std::ifstream& taken, std::ifstream &users);
 
         // Login/out methods
-        bool login(const std::string &username, const std::string &password);
+        void login(const std::string &username, const std::string &password);
         void logout();
 
         // Book info methods
@@ -27,11 +28,12 @@ class LibrService
 
         // Book find methods
         void findPaper(const std::string &option, const std::string &value, Papers::Type type,
-                       bool sorted = false, const std::string &key = "", unsigned top = 0);
+                       bool sorted = false, bool asc = true, const std::string &key = "", int top = 0);
 
         // User alter methods
         void addUser(User *user);
         void removeUser(User *user);
+        void removeUser(const std::string &username);
         void changeSelfPass(const std::string &pass);
         void changeOtherPass(const std::string &username, const std::string &pass);
 
@@ -47,11 +49,10 @@ class LibrService
         // Save method
         void save(std::ofstream &libr, std::ofstream& taken, std::ofstream &users);
 
-    private:
         void adminOnly() const;
         void readerOnly() const;
         void checkLogged() const;
-
+        
     private:
         LibrRepo books;
         LibrRepo taken;

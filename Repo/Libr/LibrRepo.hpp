@@ -23,11 +23,10 @@ class LibrRepo
         unsigned getCopies(std::string &isbn) const;
 
         void showType(Papers::Type type) const;
-        void showAll() const;
         void showDetailedInfo(const std::string &isbn) const;
 
         void find(const std::string& option, const std::string &value, Papers::Type type,
-                       bool sorted = false, const std::string &key = "", unsigned top = 0);
+                       bool sorted = false, bool asc = true, const std::string &key = "", int top = -1);
 
         void printBook(unsigned idx) const;
         void save(std::ofstream& out) const;
@@ -40,7 +39,7 @@ class LibrRepo
         Papers **copyRepo(const LibrRepo &other, unsigned newCapacity);
         void sort(std::vector<Papers*>& holder, 
                   bool (*compare)(const Papers*, const Papers*, const std::string& value),
-                  const std::string& value);
+                  const std::string& value, bool asc = true);
         bool findHelper(const std::string &option, const std::string &value, unsigned idx);
         void resize();
         void free();

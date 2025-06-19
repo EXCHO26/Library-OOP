@@ -7,7 +7,10 @@ class Command
 {
     public:
         virtual ~Command() = default;
-        virtual void execute(LibrService& service) = 0;
+        virtual void execute(LibrService& service) const = 0;
+
+    protected:
+        static unsigned stringToIndex(const std::string &line);
 };
 
 #endif

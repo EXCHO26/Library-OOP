@@ -15,7 +15,7 @@ class SessionCommand : public Command
 
         SessionCommand(Action act, const std::string& username = "", const std::string& pass = "");
 
-        void execute(LibrService &service) override;
+        void execute(LibrService &service) const override;
 
     private:
         Action act;
