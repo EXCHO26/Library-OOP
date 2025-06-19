@@ -188,7 +188,7 @@ bool Periodical::matchTaggs(const std::string &taggs) const
 {
     for (int i = 0; i < articles.size(); i++)
     {
-        for (int j = 0; articles[i].keyWords.size(); j++)
+        for (int j = 0; j < articles[i].keyWords.size(); j++)
         {
             if (articles[i].keyWords[j] == taggs) return true;
         }

@@ -12,15 +12,6 @@
 class Papers
 {
     public:
-        enum Genre
-        {
-            UNKNOWN,
-            DRAMA,
-            HORROR,
-            MYSTERY,
-            GENRE_COUNT
-        };
-
         enum Type
         {
             BOOK,
@@ -43,10 +34,10 @@ class Papers
         const std::string &getPublisher() const   { return publisher; };
         const std::string &getDescription() const { return description; };
         const std::string &getISBN() const        { return isbn; };
+        const std::string getGenre() const        { return genre; };
         unsigned getYearPublished() const         { return yearPublished; };
         unsigned getID() const                    { return id; };
         double getRating() const                  { return rating; };
-        Genre getGenre() const                    { return genre; };
 
         bool matchTitle(const std::string &title) const;
         virtual bool matchAutor(const std::string &autor) const { return false; }
@@ -77,8 +68,6 @@ class Papers
         unsigned readId(std::ifstream &in) const;
         
     protected:
-        static Genre stringToGenre(const std::string &text);
-        static const char *genreToString(Genre genre);
         static void readString(std::ifstream &file, std::string& str);
         static void writeString(std::ofstream &out, const std::string &str);
 
@@ -87,10 +76,10 @@ class Papers
         std::string publisher;
         std::string description;
         std::string isbn;
+        std::string genre;
         unsigned yearPublished;
         const unsigned id;
         double rating;
-        Genre genre;
 
         static unsigned nextId;
 };

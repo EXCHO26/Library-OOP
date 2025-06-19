@@ -85,5 +85,5 @@ bool Series::matchAutor(const std::string &autor) const
 
 bool Series::matchTaggs(const std::string &taggs) const
 {
-    return Book::matchTaggs(taggs);
+    return Book::matchTaggs(taggs) || Periodical::matchTaggs(taggs);
 }

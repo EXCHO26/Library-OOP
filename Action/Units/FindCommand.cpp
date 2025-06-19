@@ -71,8 +71,11 @@ void FindCommand::findBook(LibrService& service) const
         service.findPaper(tokens[2], tokens[3], Papers::SERIES, isSorted, asc, key, top);
         return;
     }
-
-    
+    if (tokens[0] == "list")
+    {
+        service.findPaper(tokens[2], tokens[3], Papers::ALL, isSorted, asc, key, top);
+        return;
+    }
 }
 
 void FindCommand::execute(LibrService &service) const

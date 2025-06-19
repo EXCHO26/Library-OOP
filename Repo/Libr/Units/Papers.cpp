@@ -50,25 +50,6 @@ void Papers::writeString(std::ofstream &out, const std::string &str)
     if (!out) throw std::runtime_error("Failed to write string.");
 }
 
-Papers::Genre Papers::stringToGenre(const std::string &text)
-{
-    if (text == "Drama") return Papers::DRAMA;
-    if (text == "Horror") return Papers::HORROR;
-    if (text == "Mystery") return Papers::MYSTERY;
-    return Papers::UNKNOWN;
-}
-
-const char* Papers::genreToString(Genre genre)
-{
-    switch (genre) 
-    {
-        case DRAMA: return "Drama";
-        case HORROR: return "Horror";
-        case MYSTERY: return "Mystery";
-        default: return "UNKNOWN";
-    }
-}
-
 Papers::Papers(std::ifstream& file) : id(readId(file))
 {
     if (!file) throw std::invalid_argument("Cannot open the file for paper creation!");
@@ -86,8 +67,7 @@ Papers::Papers(std::ifstream& file) : id(readId(file))
     file.read((char *)&rating, sizeof(rating));
     if (!file) throw std::runtime_error("Failed to read rating.");
 
-    readString(file, genre);
-    this->genre = stringToGenre(genre);
+    readString(file, this->genre);
 
     nextId = this->id + 1;
 }
@@ -95,12 +75,11 @@ Papers::Papers(std::ifstream& file) : id(readId(file))
 Papers::Papers(const std::string &title, const std::string &publisher, const std::string &description, 
                const std::string &isbn, unsigned yearPublished, double rating, const std::string &genre)
     : title(title), publisher(publisher), description(description), isbn(isbn),
-      yearPublished(yearPublished), id(nextId++), rating(rating), genre(stringToGenre(genre))
+      yearPublished(yearPublished), id(nextId++), rating(rating), genre(genre)
 {
     if (title.empty()) throw std::invalid_argument("Title cannot be empty.");
     if (publisher.empty()) throw std::invalid_argument("Publisher cannot be empty.");
-    if (rating < 0.0 || rating > 10.0) throw std::invalid_argument("Rating must be between 0.0 and 10.0.");
-    if (stringToGenre(genre) == UNKNOWN) throw std::invalid_argument("Invalid genre provided.");      
+    if (rating < 0.0 || rating > 10.0) throw std::invalid_argument("Rating must be between 0.0 and 10.0.");    
 }
 
 
@@ -154,9 +133,7 @@ void Papers::setRating(double rating)
 
 void Papers::setGenre(const std::string &genre)
 {
-    Genre newGenre = stringToGenre(genre);
-    if (newGenre == UNKNOWN) throw std::invalid_argument("Invalid genre provided.");
-    this->genre = newGenre;
+    this->genre = genre;
 }
 
 void Papers::printShort() const
@@ -177,14 +154,7 @@ void Papers::printInfo() const
               << "ISBN: " << this->isbn << '\n'
               << "Year Published: " << this->yearPublished << '\n'
               << "Rating: " << this->rating << '\n'
-              << "Genre: ";
-    
-    switch (this->genre) {
-        case DRAMA: std::cout << "Drama"; break;
-        case HORROR: std::cout << "Horror"; break;
-        case MYSTERY: std::cout << "Mystery"; break;
-        default: std::cout << "Unknown"; break;
-    }
+              << "Genre: " << this->genre << '\n';
     std::cout << '\n';
 }
 
@@ -202,8 +172,7 @@ void Papers::saveOnFile(std::ofstream &out) const
     out.write((const char *)&yearPublished, sizeof(yearPublished));
     out.write((const char *)&rating, sizeof(rating));
 
-    std::string genreStr = genreToString(this->genre);
-    writeString(out, genreStr);
+    writeString(out, this->genre);
 }
 
 void Papers::change()
@@ -239,11 +208,6 @@ void Papers::change()
     std::cin.ignore();
     std::cout << " > Genre: ";
     std::getline(std::cin, genre);
-
-    if (stringToGenre(genre) == UNKNOWN)
-    {
-        throw std::invalid_argument("Invalid genre!");
-    }
 
     setTitle(title);
     setPublisher(publisher);

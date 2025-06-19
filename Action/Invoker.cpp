@@ -66,6 +66,7 @@ void Invoker::run()
 
         if (line == "help")
         {
+            std::system("cls");
             printHelp();
             continue;
         }
